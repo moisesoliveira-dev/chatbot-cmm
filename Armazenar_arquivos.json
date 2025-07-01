@@ -1,0 +1,616 @@
+{
+  "name": "Armazenar arquivos",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        240,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('When Executed by Another Workflow').item.json.mediaPath }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1300,
+        220
+      ],
+      "id": "1481ec30-933c-4787-911d-819d1ed9844f",
+      "name": "Baixar arquivos whatsapp",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $('When Executed by Another Workflow').item.json.ticketId }} - {{ $('When Executed by Another Workflow').item.json.nome }}",
+        "limit": 10,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          }
+        },
+        "options": {
+          "fields": [
+            "*",
+            "id",
+            "name"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1100,
+        220
+      ],
+      "id": "171d71f9-a85d-43be-93bb-156e1a87b41c",
+      "name": "Buscar pasta cliente",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "puf1iudUGSjhTJvT",
+          "name": "Google Drive account cmm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.ano }}",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1CXv4WdKVnyopaGBToq4PMXBbImz39wGu",
+            "mode": "list",
+            "cachedResultName": "01 - VENDAS E PROJETOS",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1CXv4WdKVnyopaGBToq4PMXBbImz39wGu"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        560,
+        220
+      ],
+      "id": "916923a0-4ba2-45bf-85a3-72397341faf9",
+      "name": "Buscar pasta ano",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "puf1iudUGSjhTJvT",
+          "name": "Google Drive account cmm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega data atual\nconst now = new Date();\n\n// Lista dos meses em português\nconst meses = [\n  \"janeiro\", \"fevereiro\", \"março\", \"abril\", \"maio\", \"junho\",\n  \"julho\", \"agosto\", \"setembro\", \"outubro\", \"novembro\", \"dezembro\"\n];\n\n// Extrai ano e nome do mês\nconst year = now.getFullYear().toString();\nconst monthName = meses[now.getMonth()];\n\nreturn [\n  {\n    json: {\n      ano: year,\n      mes: monthName\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        220
+      ],
+      "id": "f7507ed5-73cb-408e-bbe7-e6f25ccdc676",
+      "name": "Ano e Mês"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $('Ano e Mês').item.json.mes }}",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        720,
+        220
+      ],
+      "id": "14a11dab-c1d5-4db4-96ba-1c11d9766667",
+      "name": "Buscar pasta mês",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "puf1iudUGSjhTJvT",
+          "name": "Google Drive account cmm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('When Executed by Another Workflow').item.json.nome }} - {{ $('When Executed by Another Workflow').item.json.body }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Buscar pasta cliente').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1520,
+        220
+      ],
+      "id": "7c5e034f-a312-409e-a08b-ae1393d62aa0",
+      "name": "Adicionar projeto cliente",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "puf1iudUGSjhTJvT",
+          "name": "Google Drive account cmm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "=ANDAMENTO",
+        "limit": 10,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        900,
+        220
+      ],
+      "id": "46d1b6e4-d4e9-4e6d-8c4a-0c4dee911227",
+      "name": "Buscar pasta andamento",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "puf1iudUGSjhTJvT",
+          "name": "Google Drive account cmm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://cmmodulados.gosac.com.br/api/tickets/{{ $('When Executed by Another Workflow').first().json.ticketId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "INTEGRATION 0ddfe6600ac270ae602f509c3bf247dd8b581fe6672dc48fcb2853d91328"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1740,
+        220
+      ],
+      "id": "489137a0-dfe7-4005-83b6-93d7d2b8d74a",
+      "name": "Recuperar ticket2",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tb_mensagem_cliente",
+          "mode": "list",
+          "cachedResultName": "tb_mensagem_cliente"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "contactid": "={{ $json.contactId }}",
+            "lastmessage": "={{ $json.updatedAt }}"
+          },
+          "matchingColumns": [
+            "contactid"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "mediapath",
+              "displayName": "mediapath",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "mediatype",
+              "displayName": "mediatype",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ticketid",
+              "displayName": "ticketid",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "contactid",
+              "displayName": "contactid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "userid",
+              "displayName": "userid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lastmessageat",
+              "displayName": "lastmessageat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ematendimento",
+              "displayName": "ematendimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "finalizoutriagem",
+              "displayName": "finalizoutriagem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "stopchatbot",
+              "displayName": "stopchatbot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "templateid",
+              "displayName": "templateid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pararmensagem",
+              "displayName": "pararmensagem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lastmessage",
+              "displayName": "lastmessage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fase_arquivos",
+              "displayName": "fase_arquivos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "local_arquivo",
+              "displayName": "local_arquivo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_atendente",
+              "displayName": "id_atendente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "data_medicao",
+              "displayName": "data_medicao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2000,
+        200
+      ],
+      "id": "b851ad5f-9aaa-4840-af95-f83872bed026",
+      "name": "Atualizar data da ultima mensagem2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Ae3SWsg6PDeqkf0W",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id": 311,
+          "mediaPath": "https://cmmodulados.gosac.com.br/api/public/16311_1750986607800/16311_1750986607800.jpeg",
+          "body": "",
+          "mediaType": "image",
+          "ticketId": 16311,
+          "contactId": 24914,
+          "userId": 45,
+          "lastmessageat": null,
+          "nome": "Moisés Seixas",
+          "emAtendimento": false,
+          "finalizoutriagem": false,
+          "stopchatbot": false,
+          "templateId": null,
+          "pararmensagem": true,
+          "lastmessage": "2025-06-27T01:09:14.480Z",
+          "state": 4,
+          "fase_arquivos": "projeto"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Ano e Mês",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar arquivos whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Adicionar projeto cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar pasta cliente": {
+      "main": [
+        [
+          {
+            "node": "Baixar arquivos whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar pasta ano": {
+      "main": [
+        [
+          {
+            "node": "Buscar pasta mês",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ano e Mês": {
+      "main": [
+        [
+          {
+            "node": "Buscar pasta ano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar pasta mês": {
+      "main": [
+        [
+          {
+            "node": "Buscar pasta andamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar pasta andamento": {
+      "main": [
+        [
+          {
+            "node": "Buscar pasta cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recuperar ticket2": {
+      "main": [
+        [
+          {
+            "node": "Atualizar data da ultima mensagem2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adicionar projeto cliente": {
+      "main": [
+        [
+          {
+            "node": "Recuperar ticket2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cb9e264c-f720-4708-9ab8-b21dce1dad28",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "520e1b06ac9e78bb9b9e79d71a6de87f12f6c163c0e27372e288322703b9890b"
+  },
+  "id": "K3JYvzQkFDZ4Ro9z",
+  "tags": []
+}

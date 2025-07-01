@@ -1,0 +1,19 @@
+{
+  "body": {
+    "data": {
+      "mediaType": "chat",
+      "fromMe": false,
+      "contactId": 99999,
+      "ticketId": 11111,
+      "body": "Oi, preciso de um orçamento",
+      "mediaUrl": null,
+      "updatedAt": "2025-06-30T20:00:00.000Z",
+      "ticket": {
+        "contact": {
+          "isGroup": false
+        },
+        "createdAt": "2025-06-30T20:00:00.000Z"
+      }
+    }
+  }
+}

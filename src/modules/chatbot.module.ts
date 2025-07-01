@@ -8,6 +8,8 @@ import { RedisService } from '../services/redis.service';
 import { ApiService } from '../services/api.service';
 import { TimeService } from '../services/time.service';
 import { TemplateService } from '../services/template.service';
+import { GoogleDriveService } from '../services/google-drive.service';
+import { FileStorageService } from '../services/file-storage.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MensagemCliente])],
@@ -17,6 +19,8 @@ import { TemplateService } from '../services/template.service';
     MensagemClienteService,
     RedisService,
     ApiService,
+    GoogleDriveService,
+    FileStorageService,
     TimeService,
     TemplateService,
   ],
@@ -25,6 +29,8 @@ import { TemplateService } from '../services/template.service';
     MensagemClienteService,
     RedisService,
     ApiService,
+    GoogleDriveService,
+    FileStorageService,
     TimeService,
     TemplateService,
   ],

@@ -23,4 +23,21 @@ export class TimeService {
       passedOneHour: diffMinutes > 60
     };
   }
+
+  /**
+   * Obtém ano e mês atual formatados em português
+   */
+  getCurrentYearMonth(): { year: string; month: string } {
+    const now = new Date();
+    
+    const meses = [
+      'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+      'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+    ];
+
+    const year = now.getFullYear().toString();
+    const monthName = meses[now.getMonth()];
+
+    return { year, month: monthName };
+  }
 }

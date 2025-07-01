@@ -30,4 +30,26 @@ export class MockApiService {
     console.log(`✅ Ticket retrieved:`, mockResponse);
     return mockResponse;
   }
+
+  /**
+   * Mock: Redireciona ticket para um usuário específico
+   */
+  async redirectTicket(ticketId: number, userId: number): Promise<void> {
+    console.log(`🔄 REDIRECTING TICKET ${ticketId} TO USER ${userId} (MOCK)`);
+    console.log(`✅ Ticket redirected successfully (MOCK)`);
+    
+    // Simula delay da API
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  /**
+   * Mock: Atualiza status do ticket
+   */
+  async updateTicketStatus(ticketId: number, status: string): Promise<void> {
+    console.log(`🔄 UPDATING TICKET ${ticketId} STATUS TO: ${status} (MOCK)`);
+    console.log(`✅ Ticket status updated successfully (MOCK)`);
+    
+    // Simula delay da API
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
 }

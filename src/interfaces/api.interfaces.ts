@@ -15,3 +15,11 @@ export interface TimeComparison {
   differenceInMinutes: number;
   passedOneHour: boolean;
 }
+
+export interface TicketRedirectRequest {
+  userId: number;
+}
+
+export interface TicketStatusUpdateRequest {
+  status: string;
+}

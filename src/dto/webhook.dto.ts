@@ -10,6 +10,10 @@ export class TicketDto {
   @ValidateNested()
   @Type(() => ContactDto)
   contact: ContactDto;
+
+  @IsOptional()
+  @IsString()
+  createdAt?: string;
 }
 
 export class WebhookDataDto {

@@ -65,4 +65,51 @@ export class MockMensagemClienteService {
     });
     console.log(`Mock DB RESTART chatbot for contactid=${contactId}, ticketid=${ticketId}`);
   }
+
+  /**
+   * Verifica se é um cliente novo baseado na data de criação do ticket
+   * Um cliente é considerado novo se o ticket foi criado no mesmo dia
+   */
+  isNewClient(ticketCreatedAt: string): boolean {
+    const createdAt = new Date(ticketCreatedAt);
+    
+    // Ajusta o horário para UTC-4 (Manaus)
+    const manausOffsetMs = 4 * 60 * 60 * 1000;
+    const createdManaus = new Date(createdAt.getTime() - manausOffsetMs);
+    
+    const nowUtc = new Date();
+    const nowManaus = new Date(nowUtc.getTime() - manausOffsetMs);
+    
+    // Compara apenas ano, mês e dia
+    const isSameDay =
+        createdManaus.getFullYear() === nowManaus.getFullYear() &&
+        createdManaus.getMonth() === nowManaus.getMonth() &&
+        createdManaus.getDate() === nowManaus.getDate();
+    
+    console.log(`Mock CHECK isNewClient for ticket created at ${ticketCreatedAt}: ${isSameDay}`);
+    return isSameDay;
+  }
+
+  /**
+   * Processa o primeiro contato de um cliente
+   * Equivale ao workflow "Primeiro_contato.json"
+   */
+  async processFirstContact(contactId: number, ticketId: number): Promise<MensagemCliente> {
+    // Dados para o primeiro contato (equivale ao "Dados armazenar arquivos2")
+    const firstContactData: Partial<MensagemCliente> = {
+      contactid: contactId,
+      ticketid: ticketId,
+      state: 1, // Estado inicial
+      fase_arquivos: 'projeto' // Fase inicial
+    };
+
+    // Upsert no banco (equivale ao upsert do Primeiro_contato.json)
+    const client = await this.createOrUpdate(firstContactData);
+
+    // Atualizar última mensagem para indicar início do atendimento
+    await this.updateLastMessage(contactId, 'Primeiro contato - Atendimento iniciado');
+
+    console.log(`Mock DB FIRST CONTACT processed for contactid=${contactId}, ticketid=${ticketId}`);
+    return client;
+  }
 }
